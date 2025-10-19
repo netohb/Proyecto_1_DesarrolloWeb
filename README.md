@@ -5,3 +5,4 @@ Este respositorio es para trabajar en el primer proyecto integrador de la materi
 
 - Ernesto Hernández Bernal
 - Emiliano Bobadilla Franco
+- Brenda Montaño Oseguera
