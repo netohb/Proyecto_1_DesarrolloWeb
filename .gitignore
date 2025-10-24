@@ -1,0 +1,29 @@
+# Ambiente virtual
+venv/
+env/
+ENV/
+
+# Base de datos
+api/data/conciertos.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+.Python
+
+# Variables de entorno
+.env
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
