@@ -63,10 +63,31 @@
 
             height: 500px;
             width: 60%;
-
             margin: 0 auto;
-
             border-radius: 10px;
+        }
+
+        /* Estilos para la sección de promociones */
+        .promociones {
+            background: linear-gradient(135deg, #2a006e, #6f00ff);
+            background-size: cover;
+            background-position: center;
+        }
+
+        .promociones h2 {
+            font-size: 2rem;
+        }
+
+        .promociones .btn {
+            border-radius: 50px;
+            padding: 0.8rem 2rem;
+            font-weight: bold;
+            background-color: #e30052;
+            border: none;
+        }
+
+        .promociones .btn:hover {
+            background-color: #ff4b85;
         }
     </style>
 
@@ -212,7 +233,17 @@
     <!-- Aquí pusimos el mapa con leaflet-->
     <section id="mapa" class="container-fluid my-5">
         <h2 class="text-center fw-bold" style="color: #e30052;">Mapa de Cociertos</h2>
-        <div id="concertMap" style="height: 300px;"></div>
+        <div id="concertMap" style="height: 500px;"></div>
+    </section>
+
+    <!-- SECCIÓN PROMOCIONES -->
+    <section class="promociones text-white text-center py-5">
+        <div class="container">
+            <h2 class="fw-bold mb-3">
+                ¡Recibe promociones exclusivas al registrarte en PulsePass!
+            </h2>
+            <a href="#" class="btn btn-info btn-lg mt-3">¡REGÍSTRATE YA!</a>
+        </div>
     </section>
 
 
