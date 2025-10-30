@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
+    <title>Music Manager</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 
@@ -108,9 +108,60 @@
         style="background-image: url('img/concierto-publico.jpg'); background-size: cover; background-position: center; height: 100vh;">
         <div>
             <h1 class="display-3 fw-bold">Bienvenido a Music Events</h1>
-            <p class="lead">Descubre los mejores conciertos cerca de ti</p>
+            <p class="lead">Descubre los mejores conciertos del momento</p>
+            <a href="#artistas" class="btn btn-primary btn-lg mt-3">Explorar artistas</a>
         </div>
     </header>
+
+    <!-- Aquí viene informacion de los artistas-->
+    <section id="artistas" class="container py-5">
+        <h2 class="text-center mb-4">Artistas Destacados</h2>
+        <div class="row">
+            <!-- Tarjeta Bootstrap -->
+            <div class="col-md-4 d-flex">
+                <div class="card h-100" style="width: 18rem;">
+                    <img src="img/dualipa.jpg" class="card-img-top" alt="Foto de Dua Lipa">
+                    <div class="card-body">
+                        <h5 class="card-title">Dua Lipa</h5>
+                        <p class="card-text">Dua Lipa es una cantante, compositora y modelo británica de origen
+                            albanokosovar, conocida por su potente voz y éxitos como "New Rules" y "Levitating".
+                        </p>
+                        <a href="#" class="btn btn-primary">Ver conciertos</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Más artistas -->
+
+            <div class="col-md-4 d-flex">
+                <div class="card h-100" style="width: 18rem;">
+                    <img src="img/pesopluma.jpg" class="card-img-top" alt="Foto de Peso Pluma">
+                    <div class="card-body">
+                        <h5 class="card-title">Peso Pluma</h5>
+                        <p class="card-text">Peso Pluma, cuyo nombre real es Hassan Emilio Kabande Laija, es un cantante
+                            y compositor mexicano nacido el 15 de junio de 1999 en Zapopan, Jalisco.
+                        </p>
+                        <a href="#" class="btn btn-primary">Ver conciertos</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Más artistas -->
+
+            <div class="col-md-4 d-flex">
+                <div class="card h-100" style="width: 18rem;">
+                    <img src="img/andrea-bocelli.jpeg" class="card-img-top" alt="Foto de Andrea Bocelli">
+                    <div class="card-body">
+                        <h5 class="card-title">Andrea Bocelli</h5>
+                        <p class="card-text">Andrea Bocelli es un famoso cantante, tenor y productor musical italiano,
+                            conocido por su impresionante voz y su capacidad para fusionar la música clásica con el pop.
+                        </p>
+                        <a href="#" class="btn btn-primary">Ver conciertos</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
