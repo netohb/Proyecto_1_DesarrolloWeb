@@ -11,6 +11,38 @@ const infoArtista = document.getElementById("infoArtista");
 const chartPopularidad = document.getElementById("chartPopularidad");
 const chartRentabilidad = document.getElementById("chartRentabilidad");
 
+// --- MODO (Claro/Oscuro) ---
+const root = document.documentElement;           
+const themeToggle = document.getElementById('modoOscuro');
+
+function applyTheme(theme) {
+  root.setAttribute('data-bs-theme', theme);
+  localStorage.setItem('pp-theme', theme);
+
+  if (window.Chart) {
+    Chart.defaults.color = (theme === 'dark') ? '#eaeaea' : '#212529';
+    Chart.defaults.borderColor = (theme === 'dark') ? '#444' : '#e5e7eb';
+  }
+
+  if (typeof Chart !== 'undefined' && chart1 instanceof Chart) chart1.update();
+  if (typeof Chart !== 'undefined' && chart2 instanceof Chart) chart2.update();
+
+}
+
+// --- SWITCH ---
+function initTheme() {
+  const saved = localStorage.getItem('pp-theme') || 'light';
+  applyTheme(saved);
+
+  if (themeToggle) {
+    themeToggle.checked = (saved === 'dark');
+    themeToggle.addEventListener('change', () => {
+      applyTheme(themeToggle.checked ? 'dark' : 'light');
+    });
+  }
+}
+
+
 let chart1, chart2;
 window.artistasData = []; // Arreglo global para guardar todos los artistas
 
@@ -97,6 +129,8 @@ async function cargarEstadisticas() {
         const popularidades = artistasTop.map(a => a.popularidad);
 
         if (chart1) chart1.destroy();
+        const uiColor = getComputedStyle(document.body).color;
+
         chart1 = new Chart(chartPopularidad, {
             type: "bar",
             data: {
@@ -132,7 +166,7 @@ async function cargarEstadisticas() {
                     title: {
                         display: true,
                         text: "🎤 Popularidad de los Artistas Top",
-                        color: "#333",
+                        color: uiColor,
                         font: { size: 18, weight: "bold" },
                         padding: { top: 10, bottom: 20 }
                     },
@@ -169,7 +203,7 @@ async function cargarEstadisticas() {
                     title: {
                         display: true,
                         text: "💰 Rentabilidad Neta por Ciudad",
-                        color: "#333",
+                        color: uiColor,
                         font: { size: 18, weight: "bold" },
                         padding: { top: 10, bottom: 20 }
                     },
@@ -191,7 +225,9 @@ async function cargarEstadisticas() {
 
 
 // INICIALIZAR TODO AL CARGAR LA PÁGINA
+
 document.addEventListener("DOMContentLoaded", async () => {
-    await cargarArtistas();
-    await cargarEstadisticas();
+  initTheme();
+  await cargarArtistas();
+  await cargarEstadisticas();
 });
