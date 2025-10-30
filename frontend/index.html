@@ -57,6 +57,17 @@
             object-fit: cover;
 
         }
+
+        /*mapa de conciertos*/
+        #concertMap {
+
+            height: 500px;
+            width: 60%;
+
+            margin: 0 auto;
+
+            border-radius: 10px;
+        }
     </style>
 
 </head>
@@ -198,11 +209,46 @@
         </div>
     </section>
 
+    <!-- Aquí pusimos el mapa con leaflet-->
+    <section id="mapa" class="container-fluid my-5">
+        <h2 class="text-center fw-bold" style="color: #e30052;">Mapa de Cociertos</h2>
+        <div id="concertMap" style="height: 300px;"></div>
+    </section>
+
+
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
+
+    <!-- Leaflet CSS y JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        // Crear el mapa
+        const map = L.map('concertMap').setView([19.4326, -99.1332], 6); // México como vista inicial
+
+        // Capa base (de OpenStreetMap)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
+        }).addTo(map);
+
+        // Marcadores de conciertos
+        const conciertos = [
+            { ciudad: "CDMX - Foro Sol", lat: 19.4042, lng: -99.0975 },
+            { ciudad: "Guadalajara - Auditorio Telmex", lat: 20.7334, lng: -103.3923 },
+            { ciudad: "Monterrey - Arena Monterrey", lat: 25.6866, lng: -100.3161 }
+        ];
+
+        conciertos.forEach(c => {
+            L.marker([c.lat, c.lng])
+                .addTo(map)
+                .bindPopup(`<b>${c.ciudad}</b>`);
+        });
+    </script>
+
 </body>
 
 </html>
