@@ -7,13 +7,60 @@
     <title>Bootstrap demo</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <style>
+        header {
+            position: relative;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.55);
+            z-index: 0;
+        }
+
+        header>div {
+            position: relative;
+            z-index: 1;
+        }
+
+        nav.navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 10;
+            background-color: transparent !important;
+        }
+
+        /* Aumenta el espaciado entre los elementos */
+        .navbar-nav .nav-item {
+            margin-right: 90px;
+        }
+
+        .navbar-dark .navbar-nav .nav-link {
+            opacity: 1 !important;
+            color: white !important;
+            transition: color 0.2s ease;
+        }
+
+        .navbar-dark .navbar-nav .nav-link:hover {
+            color: #bb86fc !important;
+            /* un morado claro al pasar el mouse */
+        }
+    </style>
+
 </head>
 
 <body>
-    <h1>Hello, world!</h1>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+
+
+    <!-- Aquí pusimos la barra de navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-transparent position-absolute w-100">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Brand</a>
+            <a class="navbar-brand text-white" href="#">Brand</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -21,13 +68,14 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Registrate</a>
+                    <li class="nav-item ms-4 me-6">
+                        <a class="nav-link active text-white fw-semibold" aria-current="page" href="#">Registrate</a>
                     </li>
-                    <li class="nav-item">
+
+                    <li class="nav-item text-white">
                         <a class="nav-link" href="#">Link</a>
                     </li>
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown text-white">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
                             Ver eventos en:
@@ -41,11 +89,12 @@
 
                         </ul>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item text-white">
                         <a class="nav-link disabled" aria-disabled="true">Disabled</a>
                     </li>
                 </ul>
-                <form class="d-flex" role="search">
+                <form class="d-flex ms-auto me-5 w-25 w-md-50 w-lg-75" role="search">
+
                     <input class="form-control me-2" type="search" placeholder="Busca a tu artista favorito"
                         aria-label="Search" />
                     <button class="btn btn-outline-success" type="submit">Go!!</button>
@@ -53,6 +102,16 @@
             </div>
         </div>
     </nav>
+
+    <!-- Aquí viene el header, con una imagen referente al tema-->
+    <header class="d-flex align-items-center justify-content-center text-center text-white"
+        style="background-image: url('img/concierto-publico.jpg'); background-size: cover; background-position: center; height: 100vh;">
+        <div>
+            <h1 class="display-3 fw-bold">Bienvenido a Music Events</h1>
+            <p class="lead">Descubre los mejores conciertos cerca de ti</p>
+        </div>
+    </header>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
