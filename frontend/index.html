@@ -50,6 +50,13 @@
             color: #bb86fc !important;
             /* un morado claro al pasar el mouse */
         }
+
+        .custom-img {
+            height: 300px;
+
+            object-fit: cover;
+
+        }
     </style>
 
 </head>
@@ -127,7 +134,7 @@
 
     <!-- Aquí viene informacion de los artistas-->
     <section id="artistas" class="container py-5">
-        <h2 class="text-center mb-4">Artistas Destacados</h2>
+        <h2 class="text-center fw-bold" style="color: #e30052;">Artistas destacados</h2>
         <div class="row">
             <!-- Tarjeta Bootstrap -->
             <div class="col-md-4 d-flex">
@@ -173,6 +180,24 @@
             </div>
         </div>
     </section>
+
+    <!--Imagenes de conciertos de diferentes géneros-->
+    <section class="w-100 overflow-hidden">
+        <h2 class="text-center fw-bold" style="color: #e30052;">Conócenos...</h2>
+
+        <div class="row g-0">
+            <div class="col-12 col-md-4">
+                <img src="img/concierto.jpg" class="img-fluid w-100 custom-img" alt="Cocierto en vivo">
+            </div>
+            <div class="col-12 col-md-4">
+                <img src="img/palenque.jpg" class="img-fluid w-100 custom-img" alt="Palenque en vivo">
+            </div>
+            <div class="col-12 col-md-4">
+                <img src="img/opera.jpg" class="img-fluid w-100 custom-img" alt="Ópera">
+            </div>
+        </div>
+    </section>
+
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
