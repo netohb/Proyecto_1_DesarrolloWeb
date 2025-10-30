@@ -164,7 +164,7 @@
         </div>
     </header>
 
-    <!-- Aquí viene informacion de los artistas-->
+    <!-- Aquí viene informacion de los artistas destacados-->
     <section id="artistas" class="container py-5">
         <h2 class="text-center fw-bold" style="color: #e30052;">Artistas destacados</h2>
         <div class="row">
@@ -212,6 +212,33 @@
             </div>
         </div>
     </section>
+
+
+    <!-- Sección de estadísticas e Interactividad con la API-->
+    <section id="estadisticas" class="container py-5">
+        <h2 class="text-center fw-bold" style="color: #e30052;">Dashboard de Estadísticas</h2>
+
+        <!-- Dropdown -->
+        <div class="text-center mb-4">
+            <select id="selectArtista" class="form-select w-50 mx-auto">
+                <option selected disabled>Cargando artistas...</option>
+            </select>
+        </div>
+
+        <!-- Información del artista -->
+        <div id="infoArtista" class="mb-5"></div>
+
+        <!-- Gráficas -->
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <canvas id="chartPopularidad"></canvas>
+            </div>
+            <div class="col-md-6">
+                <canvas id="chartRentabilidad"></canvas>
+            </div>
+        </div>
+    </section>
+
 
     <!--Imagenes de conciertos de diferentes géneros-->
     <section class="w-100 overflow-hidden">
@@ -279,6 +306,11 @@
                 .bindPopup(`<b>${c.ciudad}</b>`);
         });
     </script>
+
+    <!-- Librería de Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/api.js"></script>
+
 
 </body>
 
