@@ -113,12 +113,12 @@
             border-color: #2a2a2a;
         }
 
-        [data-bs-theme="dark"] .dropdown-item { 
-            color: #eaeaea; 
+        [data-bs-theme="dark"] .dropdown-item {
+            color: #eaeaea;
         }
-        
-        [data-bs-theme="dark"] .dropdown-item:hover { 
-            background-color: #2a2a2a; 
+
+        [data-bs-theme="dark"] .dropdown-item:hover {
+            background-color: #2a2a2a;
         }
 
         [data-bs-theme="dark"] .btn-primary {
@@ -137,13 +137,12 @@
         }
 
         [data-bs-theme="dark"] header::before {
-            background-color: rgba(0,0,0,0.6);
+            background-color: rgba(0, 0, 0, 0.6);
         }
 
         [data-bs-theme="dark"] .promociones {
             background: linear-gradient(135deg, #0f0b1a, #1f1140);
         }
-
     </style>
 
 </head>
@@ -169,36 +168,16 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item ms-4 me-6">
-                        <a class="nav-link active text-white fw-semibold" aria-current="page" href="#">Registrate</a>
+                        <a class="nav-link active text-white fw-semibold" aria-current="page"
+                            href="Registro.html">Registrate</a>
                     </li>
 
                     <li class="nav-item text-white">
-                        <a class="nav-link" href="#">Link</a>
+                        <a class="nav-link" href="conciertos.html">Ver Conciertos</a>
                     </li>
-                    <li class="nav-item dropdown text-white">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            Ver eventos en:
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">CDMX</a></li>
-                            <li><a class="dropdown-item" href="#">USA</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
 
-                        </ul>
-                    </li>
-                    <li class="nav-item text-white">
-                        <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-                    </li>
                 </ul>
-                <form class="d-flex ms-auto me-5 w-25 w-md-50 w-lg-75" role="search">
 
-                    <input class="form-control me-2" type="search" placeholder="Busca a tu artista favorito"
-                        aria-label="Search" />
-                    <button class="btn btn-outline-success" type="submit">Go!!</button>
-                </form>
                 <div class="form-check form-switch text-white ms-3">
                     <input class="form-check-input" type="checkbox" id="modoOscuro">
                     <label class="form-check-label" for="modoOscuro">🌙</label>
@@ -215,7 +194,7 @@
             <img src="img/logo.png" width="300" height="200" class="rounded mx-auto d-block" alt="Logo de la app">
             <h1 class="display-3 fw-bold">Bienvenido a PulsePass</h1>
             <p class="lead">Descubre los mejores conciertos del momento</p>
-            <a href="#artistas" class="btn btn-primary btn-lg mt-3">Explorar artistas</a>
+            <a href="artistas.html" class="btn btn-primary btn-lg mt-3">Explorar artistas</a>
         </div>
     </header>
 
@@ -261,7 +240,8 @@
                         <p class="card-text">Andrea Bocelli es un famoso cantante, tenor y productor musical italiano,
                             conocido por su impresionante voz y su capacidad para fusionar la música clásica con el pop.
                         </p>
-                        <a href="https://www.andreabocelli.com/?post_type=tour" class="btn btn-primary">Ver conciertos</a>
+                        <a href="https://www.andreabocelli.com/?post_type=tour" class="btn btn-primary">Ver
+                            conciertos</a>
                     </div>
                 </div>
             </div>
@@ -312,11 +292,6 @@
         </div>
     </section>
 
-    <!-- Aquí pusimos el mapa con leaflet-->
-    <section id="mapa" class="container-fluid my-5">
-        <h2 class="text-center fw-bold" style="color: #e30052;">Mapa de Cociertos</h2>
-        <div id="concertMap" style="height: 500px;"></div>
-    </section>
 
     <!-- SECCIÓN PROMOCIONES -->
     <section class="promociones text-white text-center py-5">
@@ -335,9 +310,6 @@
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
 
-    <!-- Leaflet CSS y JS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
         // Crear el mapa
