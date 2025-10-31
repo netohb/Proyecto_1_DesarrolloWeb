@@ -74,3 +74,59 @@ La documentación técnica completa de la API, destinada al equipo de *frontend*
 
 Para una **prueba interactiva** (Swagger UI), corre el servidor localmente (ver guía de configuración) y visita:
 [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+
+# 🎨 Frontend 
+
+Interfaz web de la plataforma para la gestión de conciertos y artistas.  
+Desarrollada con **HTML, CSS, JavaScript y Bootstrap 5.3**, conecta con el backend FastAPI para mostrar información dinámica, mapas y estadísticas.
+
+---
+
+## 🧩 Herramientas utilizadas
+
+- ⚙️ **Bootstrap 5.3** – Diseño responsivo.
+- 📊 **Chart.js** – Gráficas de popularidad y rentabilidad.
+- 🗺️ **Leaflet.js** – Mapa interactivo con marcadores de conciertos.
+- 💾 **LocalStorage** – Guarda la preferencia del modo oscuro.
+- 🌐 **API REST (FastAPI)** – Fuente de datos para artistas y estadísticas.
+
+---
+
+## 📁 Estructura de archivos
+
+frontend/
+├── index.html → Página principal con secciones y componentes
+├── js/api.js → Conexión con API, modo oscuro y render dinámico
+├── img/ → Imágenes de artistas y recursos visuales
+└── registro.html → Formulario de registro enlazado desde promociones
+
+---
+
+## 🖥️ Funcionalidad
+
+- **Navbar:** navegación principal con switch para modo oscuro.  
+- **Hero:** portada con imagen de fondo y llamada a la acción.  
+- **Artistas destacados:** tarjetas con enlaces externos a cada artista.  
+- **Dashboard:** consumo de la API para listar artistas y mostrar estadísticas.  
+- **Mapa de conciertos:** creado con Leaflet, muestra ubicaciones.  
+- **Promociones:** última sección con enlace al registro.
+
+---
+
+## 🌗 Modo oscuro
+
+- Implementado con el atributo `data-bs-theme` de Bootstrap.  
+- Se activa mediante el switch con id `modoOscuro`.  
+- Guarda la preferencia en `localStorage` para mantener el modo tras recargar.  
+- Adapta colores, fondos y botones.
+
+---
+
+## 🔌 Integración con la API
+
+El frontend consume los siguientes endpoints del backend:
+
+- `GET /api/artistas` → carga paginada de artistas para el selector.  
+- `GET /api/estadisticas` → obtiene datos para las gráficas de popularidad y rentabilidad.  
+ 
+---
