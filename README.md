@@ -108,7 +108,16 @@ Mantiene el mismo estilo visual, esquema de colores y navegación coherente con 
 
 ---
 
-### 🎯 Frontend · Registro, Login y Términos
+## 🎵 **Frontend · Conciertos**
+
+`conciertos.html` muestra un mapa interactivo desarrollado con **Leaflet**, conectado dinámicamente a la API de PulsePass. Permite seleccionar un artista desde un menú desplegable para visualizar sus conciertos sobre el mapa y acceder a información detallada de cada evento.  
+
+Al seleccionar un artista, se muestra su **tarjeta informativa** (foto, biografía, país, popularidad) junto con un mapa que marca la ubicación de cada concierto. Los marcadores incluyen información del evento (nombre, ciudad, fecha y precio) y se acompañan de una lista lateral con estadísticas detalladas: asistencia proyectada y real, costos de producción, ingresos por taquilla, estado y venue.  
+
+---
+
+
+## 🎯 Frontend · Registro, Login y Términos
 
 registro.html es el formulario de alta con validación Bootstrap, autoguardado de campos y verificación de géneros (debe haber al menos uno marcado). Incluye el enlace a términos y el enlace a login. Tiene un botón de tema claro/oscuro que persiste usando localStorage.
 
