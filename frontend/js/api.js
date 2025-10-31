@@ -1,45 +1,41 @@
-
-// PulsePass - API Frontend Dinámico con Gráficas
-
-// --- VARIABLES GLOBALES ---
 const URL_ARTISTAS_BASE = "http://127.0.0.1:8000/api/artistas";
 const URL_STATS = "http://127.0.0.1:8000/api/estadisticas/";
 
-// --- REFERENCIAS DEL DOM ---
+// REFERENCIAS DEL DOM 
 const selectArtista = document.getElementById("selectArtista");
 const infoArtista = document.getElementById("infoArtista");
 const chartPopularidad = document.getElementById("chartPopularidad");
 const chartRentabilidad = document.getElementById("chartRentabilidad");
 
 // --- MODO (Claro/Oscuro) ---
-const root = document.documentElement;           
+const root = document.documentElement;
 const themeToggle = document.getElementById('modoOscuro');
 
 function applyTheme(theme) {
-  root.setAttribute('data-bs-theme', theme);
-  localStorage.setItem('pp-theme', theme);
+    root.setAttribute('data-bs-theme', theme);
+    localStorage.setItem('pp-theme', theme);
 
-  if (window.Chart) {
-    Chart.defaults.color = (theme === 'dark') ? '#eaeaea' : '#212529';
-    Chart.defaults.borderColor = (theme === 'dark') ? '#444' : '#e5e7eb';
-  }
+    if (window.Chart) {
+        Chart.defaults.color = (theme === 'dark') ? '#eaeaea' : '#212529';
+        Chart.defaults.borderColor = (theme === 'dark') ? '#444' : '#e5e7eb';
+    }
 
-  if (typeof Chart !== 'undefined' && chart1 instanceof Chart) chart1.update();
-  if (typeof Chart !== 'undefined' && chart2 instanceof Chart) chart2.update();
+    if (typeof Chart !== 'undefined' && chart1 instanceof Chart) chart1.update();
+    if (typeof Chart !== 'undefined' && chart2 instanceof Chart) chart2.update();
 
 }
 
 // --- SWITCH ---
 function initTheme() {
-  const saved = localStorage.getItem('pp-theme') || 'light';
-  applyTheme(saved);
+    const saved = localStorage.getItem('pp-theme') || 'light';
+    applyTheme(saved);
 
-  if (themeToggle) {
-    themeToggle.checked = (saved === 'dark');
-    themeToggle.addEventListener('change', () => {
-      applyTheme(themeToggle.checked ? 'dark' : 'light');
-    });
-  }
+    if (themeToggle) {
+        themeToggle.checked = (saved === 'dark');
+        themeToggle.addEventListener('change', () => {
+            applyTheme(themeToggle.checked ? 'dark' : 'light');
+        });
+    }
 }
 
 
@@ -54,7 +50,7 @@ async function cargarArtistas() {
     let hasNext = true;
 
     try {
-        // 🚀 Bucle para recorrer todas las páginas
+        // Bucle para recorrer todas las páginas
         while (hasNext) {
             const response = await fetch(`${URL_ARTISTAS_BASE}?page=${currentPage}&limit=20`);
             const data = await response.json();
@@ -76,9 +72,9 @@ async function cargarArtistas() {
       ${allArtists.map(a => `<option value="${a.nombre}">${a.nombre}</option>`).join("")}
     `;
 
-        console.log(`✅ Se cargaron ${allArtists.length} artistas.`);
+        console.log(`Se cargaron ${allArtists.length} artistas.`);
     } catch (error) {
-        console.error("❌ Error al cargar artistas:", error);
+        console.error("Error al cargar artistas:", error);
         selectArtista.innerHTML = `<option>Error al cargar artistas</option>`;
     }
 }
@@ -217,9 +213,9 @@ async function cargarEstadisticas() {
             }
         });
 
-        console.log("✅ Estadísticas cargadas correctamente");
+        console.log("Estadísticas cargadas correctamente");
     } catch (error) {
-        console.error("❌ Error al cargar estadísticas:", error);
+        console.error("Error al cargar estadísticas:", error);
     }
 }
 
@@ -227,7 +223,7 @@ async function cargarEstadisticas() {
 // INICIALIZAR TODO AL CARGAR LA PÁGINA
 
 document.addEventListener("DOMContentLoaded", async () => {
-  initTheme();
-  await cargarArtistas();
-  await cargarEstadisticas();
+    initTheme();
+    await cargarArtistas();
+    await cargarEstadisticas();
 });
