@@ -91,6 +91,23 @@ Desarrollada con **HTML, CSS, JavaScript y Bootstrap 5.3**, conecta con el backe
 - 🌐 **API REST (FastAPI)** – Fuente de datos para artistas y estadísticas.
 
 ---
+## 🎶 Frontend · Página Principal e Interfaz de Artistas
+
+### 🏠 **index.html**
+La página principal de **PulsePass**.  
+Incluye el encabezado con imagen, la barra de navegación fija y secciones de **artistas destacados**, **estadísticas interactivas**, **mapa de conciertos** y **promociones**.  
+Integra el **modo claro/oscuro** persistente mediante `localStorage`, además de elementos animados y diseño *responsive* con **Bootstrap** y **Leaflet**.  
+Los enlaces del **navbar** permiten navegar a otras secciones del sitio y mantienen coherencia visual con el resto de las páginas.
+
+
+### 🎤 **artistas.html**
+Muestra dinámicamente **todos los artistas** registrados en la API mediante `fetch`.  
+Presenta una **cuadrícula de tarjetas** con imagen, biografía, país y popularidad de cada artista.  
+Cada tarjeta tiene **animaciones suaves** y un diseño adaptado al **modo oscuro**.  
+Mantiene el mismo estilo visual, esquema de colores y navegación coherente con la página principal de *PulsePass*.
+
+---
+
 ### 🎯 Frontend · Registro, Login y Términos
 
 registro.html es el formulario de alta con validación Bootstrap, autoguardado de campos y verificación de géneros (debe haber al menos uno marcado). Incluye el enlace a términos y el enlace a login. Tiene un botón de tema claro/oscuro que persiste usando localStorage.
