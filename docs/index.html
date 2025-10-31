@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Music Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <style>
+        header {
+            position: relative;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.55);
+            z-index: 0;
+        }
+
+        header>div {
+            position: relative;
+            z-index: 1;
+        }
+
+        nav.navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 10;
+            background-color: transparent !important;
+        }
+
+        /* Aumenta el espaciado entre los elementos */
+        .navbar-nav .nav-item {
+            margin-right: 90px;
+        }
+
+        .navbar-dark .navbar-nav .nav-link {
+            opacity: 1 !important;
+            color: white !important;
+            transition: color 0.2s ease;
+        }
+
+        .navbar-dark .navbar-nav .nav-link:hover {
+            color: #bb86fc !important;
+            /* un morado claro al pasar el mouse */
+        }
+
+        .custom-img {
+            height: 300px;
+
+            object-fit: cover;
+
+        }
+
+        /*mapa de conciertos*/
+        #concertMap {
+
+            height: 500px;
+            width: 60%;
+            margin: 0 auto;
+            border-radius: 10px;
+        }
+
+
+        .promociones {
+            background: linear-gradient(135deg, #2a006e, #6f00ff);
+            background-size: cover;
+            background-position: center;
+        }
+
+        .promociones h2 {
+            font-size: 2rem;
+        }
+
+        .promociones .btn {
+            border-radius: 50px;
+            padding: 0.8rem 2rem;
+            font-weight: bold;
+            background-color: #e30052;
+            border: none;
+        }
+
+        .promociones .btn:hover {
+            background-color: #ff4b85;
+        }
+
+        [data-bs-theme="dark"] body {
+            background-color: #121212;
+            color: #eaeaea;
+        }
+
+        [data-bs-theme="dark"] .card {
+            background-color: #1e1e1e;
+            color: #eaeaea;
+            border-color: #2a2a2a;
+        }
+
+        [data-bs-theme="dark"] .form-control {
+            background-color: #1e1e1e;
+            color: #eaeaea;
+            border-color: #2a2a2a;
+        }
+
+        [data-bs-theme="dark"] .dropdown-menu {
+            background-color: #1e1e1e;
+            color: #eaeaea;
+            border-color: #2a2a2a;
+        }
+
+        [data-bs-theme="dark"] .dropdown-item {
+            color: #eaeaea;
+        }
+
+        [data-bs-theme="dark"] .dropdown-item:hover {
+            background-color: #2a2a2a;
+        }
+
+        [data-bs-theme="dark"] .btn-primary {
+            background-color: #bb86fc;
+            border-color: #bb86fc;
+        }
+
+        [data-bs-theme="dark"] .btn-outline-success {
+            color: #00c16a;
+            border-color: #00c16a;
+        }
+
+        [data-bs-theme="dark"] .btn-outline-success:hover {
+            background-color: #00c16a;
+            color: #121212;
+        }
+
+        [data-bs-theme="dark"] header::before {
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        [data-bs-theme="dark"] .promociones {
+            background: linear-gradient(135deg, #0f0b1a, #1f1140);
+        }
+    </style>
+
+</head>
+
+<body>
+
+
+    <!-- Aquí pusimos la barra de navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-transparent position-absolute w-100">
+        <div class="container-fluid">
+
+            <!-- Logo de la app-->
+            <a class="navbar-brand text-white fw-bold" href="#">
+                <img src="img/logo.png" alt="Logo" width="60" height="60" class="d-inline-block align-text-top me-2">
+                PulsePass
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item ms-4 me-6">
+                        <a class="nav-link active text-white fw-semibold" aria-current="page"
+                            href="Registro.html">Registrate</a>
+                    </li>
+
+                    <li class="nav-item text-white">
+                        <a class="nav-link" href="conciertos.html">Ver Conciertos</a>
+                    </li>
+
+                </ul>
+
+                <div class="form-check form-switch text-white ms-3">
+                    <input class="form-check-input" type="checkbox" id="modoOscuro">
+                    <label class="form-check-label" for="modoOscuro">🌙</label>
+                </div>
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- Aquí viene el header, con una imagen referente al tema-->
+    <header class="d-flex align-items-center justify-content-center text-center text-white"
+        style="background-image: url('img/concierto-publico.jpg'); background-size: cover; background-position: center; height: 100vh;">
+        <div>
+            <img src="img/logo.png" width="300" height="200" class="rounded mx-auto d-block" alt="Logo de la app">
+            <h1 class="display-3 fw-bold">Bienvenido a PulsePass</h1>
+            <p class="lead">Descubre los mejores conciertos del momento</p>
+            <a href="artistas.html" class="btn btn-primary btn-lg mt-3">Explorar artistas</a>
+        </div>
+    </header>
+
+    <!-- Aquí viene informacion de los artistas destacados-->
+    <section id="artistas" class="container py-5">
+        <h2 class="text-center fw-bold" style="color: #e30052;">Artistas destacados</h2>
+        <div class="row">
+            <!-- Tarjeta Bootstrap -->
+            <div class="col-md-4 d-flex">
+                <div class="card h-100" style="width: 18rem;">
+                    <img src="img/dualipa.jpg" class="card-img-top" alt="Foto de Dua Lipa">
+                    <div class="card-body">
+                        <h5 class="card-title">Dua Lipa</h5>
+                        <p class="card-text">Dua Lipa es una cantante, compositora y modelo británica de origen
+                            albanokosovar, conocida por su potente voz y éxitos como "New Rules" y "Levitating".
+                        </p>
+                        <a href="https://www.dualipa.com/tour/" class="btn btn-primary">Ver conciertos</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Más artistas -->
+
+            <div class="col-md-4 d-flex">
+                <div class="card h-100" style="width: 18rem;">
+                    <img src="img/pesopluma.jpg" class="card-img-top" alt="Foto de Peso Pluma">
+                    <div class="card-body">
+                        <h5 class="card-title">Peso Pluma</h5>
+                        <p class="card-text">Peso Pluma, cuyo nombre real es Hassan Emilio Kabande Laija, es un cantante
+                            y compositor mexicano nacido el 15 de junio de 1999 en Zapopan, Jalisco.
+                        </p>
+                        <a href="https://www.pesopluma.com/" class="btn btn-primary">Ver conciertos</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Más artistas -->
+
+            <div class="col-md-4 d-flex">
+                <div class="card h-100" style="width: 18rem;">
+                    <img src="img/andrea-bocelli.jpeg" class="card-img-top" alt="Foto de Andrea Bocelli">
+                    <div class="card-body">
+                        <h5 class="card-title">Andrea Bocelli</h5>
+                        <p class="card-text">Andrea Bocelli es un famoso cantante, tenor y productor musical italiano,
+                            conocido por su impresionante voz y su capacidad para fusionar la música clásica con el pop.
+                        </p>
+                        <a href="https://www.andreabocelli.com/?post_type=tour" class="btn btn-primary">Ver
+                            conciertos</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Sección de estadísticas e Interactividad con la API-->
+    <section id="estadisticas" class="container py-5">
+        <h2 class="text-center fw-bold" style="color: #e30052;">Dashboard de Estadísticas</h2>
+
+        <!-- Dropdown -->
+        <div class="text-center mb-4">
+            <select id="selectArtista" class="form-select w-50 mx-auto">
+                <option selected disabled>Cargando artistas...</option>
+            </select>
+        </div>
+
+        <!-- Información del artista -->
+        <div id="infoArtista" class="mb-5"></div>
+
+        <!-- Gráficas -->
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <canvas id="chartPopularidad"></canvas>
+            </div>
+            <div class="col-md-6">
+                <canvas id="chartRentabilidad"></canvas>
+            </div>
+        </div>
+    </section>
+
+
+    <!--Imagenes de conciertos de diferentes géneros-->
+    <section class="w-100 overflow-hidden">
+        <h2 class="text-center fw-bold" style="color: #e30052;">Conócenos...</h2>
+
+        <div class="row g-0">
+            <div class="col-12 col-md-4">
+                <img src="img/concierto.jpg" class="img-fluid w-100 custom-img" alt="Cocierto en vivo">
+            </div>
+            <div class="col-12 col-md-4">
+                <img src="img/palenque.jpg" class="img-fluid w-100 custom-img" alt="Palenque en vivo">
+            </div>
+            <div class="col-12 col-md-4">
+                <img src="img/opera.jpg" class="img-fluid w-100 custom-img" alt="Ópera">
+            </div>
+        </div>
+    </section>
+
+
+    <!-- SECCIÓN PROMOCIONES -->
+    <section class="promociones text-white text-center py-5">
+        <div class="container">
+            <h2 class="fw-bold mb-3">
+                ¡Recibe promociones exclusivas al registrarte en PulsePass!
+            </h2>
+            <a href="./registro.html" class="btn btn-info btn-lg mt-3">¡REGÍSTRATE YA!</a>
+        </div>
+    </section>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+
+
+    <script>
+        // Crear el mapa
+        const map = L.map('concertMap').setView([19.4326, -99.1332], 6); // México como vista inicial
+
+        // Capa base (de OpenStreetMap)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
+        }).addTo(map);
+
+        // Marcadores de conciertos
+        const conciertos = [
+            { ciudad: "CDMX - Foro Sol", lat: 19.4042, lng: -99.0975 },
+            { ciudad: "Guadalajara - Auditorio Telmex", lat: 20.7334, lng: -103.3923 },
+            { ciudad: "Monterrey - Arena Monterrey", lat: 25.6866, lng: -100.3161 }
+        ];
+
+        conciertos.forEach(c => {
+            L.marker([c.lat, c.lng])
+                .addTo(map)
+                .bindPopup(`<b>${c.ciudad}</b>`);
+        });
+    </script>
+
+    <!-- Librería de Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/api.js"></script>
+
+
+</body>
+
+</html>
