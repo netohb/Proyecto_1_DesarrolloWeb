@@ -151,15 +151,13 @@ def create_concierto(concierto: ConciertoBase = Body(..., description="Datos del
     # Convierte el modelo Pydantic a diccionario.
     concierto_data = concierto.model_dump()
     
-    # Intenta crear el concierto en la base de datos llamando a 'models.py'.
+    # Llama a la función en 'models.py' para insertar el nuevo concierto.
+    # Si 'models.py' (corregido) lanza un error de BD (ej. artista_id no existe),
+    # FastAPI lo atrapará y devolverá un 500 automáticamente.
     nuevo_id = models.create_concierto_in_db(concierto_data)
     
-    if nuevo_id is None:
-        # Si 'models.py' devuelve None, hubo un error (posiblemente el artista_id no existía o error de BD).
-        # Aunque 'models.py' imprime el error específico, aquí devolvemos un error genérico 500.
-        # Podríamos añadir lógica para devolver 404 si el error fue por artista_id no encontrado.
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail="Error interno del servidor al intentar crear el concierto")
+    # Se elimina el bloque 'if nuevo_id is None: raise HTTPException(500)'
+    # para seguir la recomendación del profesor de no lanzar errores 500 manualmente.
                             
     # Devuelve la respuesta de éxito con el ID del nuevo concierto.
     return {"data": {"id": nuevo_id}}
@@ -188,12 +186,12 @@ def update_concierto(concierto_id: int, concierto: ConciertoBase = Body(..., des
          raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No se proporcionaron campos válidos para actualizar")
 
     # Paso 3: Llamar a 'models.py' para ejecutar la actualización.
-    success = models.update_concierto_in_db(concierto_id, concierto_data)
+    # Si 'models.py' (corregido) lanza un error de BD,
+    # FastAPI lo atrapará y devolverá un 500 automáticamente.
+    models.update_concierto_in_db(concierto_id, concierto_data)
     
-    if not success:
-        # Si la actualización falla, error 500.
-         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
-                            detail="Error interno del servidor al intentar actualizar el concierto")
+    # Se elimina el bloque 'if not success: raise HTTPException(500)'
+    # para seguir la recomendación del profesor de no lanzar errores 500 manualmente.
                             
     # Devuelve la respuesta de éxito.
     return {"message": "Concierto actualizado exitosamente"}
