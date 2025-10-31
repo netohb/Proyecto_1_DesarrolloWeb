@@ -75,14 +75,14 @@ La documentación técnica completa de la API, destinada al equipo de *frontend*
 Para una **prueba interactiva** (Swagger UI), corre el servidor localmente (ver guía de configuración) y visita:
 [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
-# 🎨 Frontend 
+## 🎨 Frontend 
 
 Interfaz web de la plataforma para la gestión de conciertos y artistas.  
 Desarrollada con **HTML, CSS, JavaScript y Bootstrap 5.3**, conecta con el backend FastAPI para mostrar información dinámica, mapas y estadísticas.
 
 ---
 
-## 🧩 Herramientas utilizadas
+### 🧩 Herramientas utilizadas
 
 - ⚙️ **Bootstrap 5.3** – Diseño responsivo.
 - 📊 **Chart.js** – Gráficas de popularidad y rentabilidad.
@@ -91,18 +91,43 @@ Desarrollada con **HTML, CSS, JavaScript y Bootstrap 5.3**, conecta con el backe
 - 🌐 **API REST (FastAPI)** – Fuente de datos para artistas y estadísticas.
 
 ---
+### 🎯 Frontend · Registro, Login y Términos
 
-## 📁 Estructura de archivos
+registro.html es el formulario de alta con validación Bootstrap, autoguardado de campos y verificación de géneros (debe haber al menos uno marcado). Incluye el enlace a términos y el enlace a login. Tiene un botón de tema claro/oscuro que persiste usando localStorage.
 
-frontend/
-├── index.html → Página principal con secciones y componentes
-├── js/api.js → Conexión con API, modo oscuro y render dinámico
-├── img/ → Imágenes de artistas y recursos visuales
-└── registro.html → Formulario de registro enlazado desde promociones
+login.html permite autenticarse con correo y contraseña, tiene mostrar/ocultar contraseña y la casilla de recordar correo. Comparte el mismo botón de tema y el mismo almacenamiento de preferencia.
+
+terms.html contiene las secciones de términos y condiciones. Mantiene el mismo estilo y toggle y ofrece un botón para volver al registro.
+
+Enlaces internos añadidos: en index.html los enlaces de navbar y promociones apuntan a registro.html. En registro.html se enlaza a terms.html y a login.html.
+
+---
+### 🛡️ Validaciones, errores y eventos del formulario
+
+El registro usa validación nativa de Bootstrap (clase was-validated) y mensajes invalid-feedback en cada campo. Se requiere aceptar términos y marcar al menos un género.  
+Al enviar, se manejan respuestas 2xx, 4xx y 5xx de la API; si no hay red se guarda el intento en una cola local para reintentar.
+
+Eventos incluidos que cubren la rúbrica:  
+input para autoguardado, beforeunload para guardar al salir, online/offline para mostrar estado de red y visibilitychange para guardar cuando la pestaña vuelve a estar activa. 
 
 ---
 
-## 🖥️ Funcionalidad
+### 📁 Estructura de archivos
+
+frontend/
+├── index.html → Página principal con secciones y componentes
+├── registro.html → Formulario de registro enlazado desde navbar y promociones
+├── login.html → Inicio de sesión con recordar correo
+├── terms.html → Términos y condiciones con toggle de tema
+├── js/
+│ ├── api.js → (si ya lo usan en index)
+│ ├── script.js → Lógica del registro (tema, autoguardado, fetch, cola offline)
+│ └── login.js → Lógica del login (recordar correo, fetch)
+└── img/ → Imágenes de artistas y recursos visuales
+
+---
+
+### 🖥️ Funcionalidad
 
 - **Navbar:** navegación principal con switch para modo oscuro.  
 - **Hero:** portada con imagen de fondo y llamada a la acción.  
@@ -113,7 +138,7 @@ frontend/
 
 ---
 
-## 🌗 Modo oscuro
+### 🌗 Modo oscuro
 
 - Implementado con el atributo `data-bs-theme` de Bootstrap.  
 - Se activa mediante el switch con id `modoOscuro`.  
@@ -122,7 +147,17 @@ frontend/
 
 ---
 
-## 🔌 Integración con la API
+### 🎛️ Persistencia en localStorage 
+
+- `pp-theme`: preferencia de tema claro/oscuro, compartida en todas las páginas.
+- `pp-register-form`: autoguardado del formulario de registro en JSON.
+- `pp-pending-queue`: cola de envíos de registro cuando no hay conexión.
+- `pp-remember-email`: correo recordado en el login.
+- `pp-auth-token`: solo en desarrollo si el backend devuelve token.
+
+---
+
+### 🔌 Integración con la API
 
 El frontend consume los siguientes endpoints del backend:
 
@@ -130,3 +165,108 @@ El frontend consume los siguientes endpoints del backend:
 - `GET /api/estadisticas` → obtiene datos para las gráficas de popularidad y rentabilidad.  
  
 ---
+
+### Endpoints usados por registro y login
+
+Base de desarrollo: http://127.0.0.1:8000
+
+#### Registro
+POST /api/registro  
+request (ejemplo para pruebas)
+```js
+{
+  "fullName": "Ana López",
+  "email": "ana@example.com",
+  "password": "secreta123",
+  "role": "manager",
+  "company": "Pulse MX",
+  "phone": "+52 55 1234 5678",
+  "city": "CDMX",
+  "genres": ["Pop", "Rock"],
+  "terms": true
+}
+```
+response éxito (200/201)
+```js
+{ "id": 123, "message": "Registro creado" }
+```
+response error (4xx)
+```js
+{ "detail": "Mensaje de error" }
+```
+#### Login
+POST /api/login  
+request
+```js
+{ "email": "ana@example.com", "password": "secreta123" }
+
+response éxito (200)
+
+{ "access_token": "<TOKEN>", "token_type": "bearer" }
+
+response error (401/403)
+
+{ "detail": "Credenciales inválidas" }
+
+---
+
+### JSON en el proyecto: qué abarca y cómo se usa
+
+Este proyecto utiliza JSON para comunicar frontend y backend, manejar errores, cachear datos y trabajar sin conexión. A continuación se resume todo lo relacionado con JSON.
+
+#### Requests enviados por el frontend
+- Formato de envío: `Content-Type: application/json` y `body` con `JSON.stringify(...)`.
+
+#### Responses leídas por el frontend
+- Éxito (2xx):
+  
+- Error (4xx/5xx): FastAPI devuelve
+
+* Fechas: se envían en ISO 8601 (terminadas en Z). Se parsean con `new Date(...)` y se formatean con `toLocaleDateString()`.
+
+#### Paginación para listados
+
+* Estructura esperada en `GET /api/artistas` y `GET /api/conciertos`:
+
+  ```json
+  {
+    "items": [ /* ... */ ],
+    "pagination": {
+      "page": 1,
+      "total_pages": 5,
+      "has_next": true,
+      "has_prev": false
+    }
+  }
+  ```
+
+#### JSON en localStorage
+
+* Claves y propósito:
+
+  * `pp-theme`: preferencia de tema.
+  * `pp-register-form`: autoguardado del formulario de registro.
+
+    ```json
+    {
+      "fullName": "Ana López",
+      "email": "ana@example.com",
+      "city": "CDMX",
+      "genres": ["Pop"]
+    }
+    ```
+  * `pp-pending-queue`: cola de envíos cuando no hay red.
+
+    ```json
+    [
+      {
+        "endpoint": "/api/registro",
+        "method": "POST",
+        "payload": { "email": "ana@example.com", "fullName": "Ana López", "terms": true },
+        "createdAt": "2025-10-30T21:15:00.000Z"
+      }
+    ]
+    ```
+  * `pp-remember-email`: correo recordado en login.
+  * `pp-auth-token`: solo en desarrollo si la API devuelve token.
+
