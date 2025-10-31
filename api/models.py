@@ -7,30 +7,30 @@ from typing import List, Dict, Any, Optional, Tuple
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, 'data', 'conciertos.db')
 
-# --- FUNCIÓN DE CONEXIÓN ---
+# --- FUNCIÓN DE CONEXIÓN (CORREGIDA) ---
 
-def get_db_connection() -> Optional[sqlite3.Connection]:
+def get_db_connection() -> sqlite3.Connection:
     """
     Establece y devuelve una conexión a la base de datos SQLite.
-    Configura la conexión para devolver filas como diccionarios (sqlite3.Row).
-    Devuelve None si la conexión falla.
+    Configura la conexión para devolver filas como diccionarios (sqlite3.Row)
+    y HABILITA la coerción de llaves foráneas (FOREIGN KEY).
     """
-    try:
-        conn = sqlite3.connect(DB_PATH)
-        # Habilita el acceso a columnas por nombre (como un diccionario)
-        conn.row_factory = sqlite3.Row  
-        return conn
-    except sqlite3.Error as e:
-        print(f"Error al conectar con la base de datos: {e}")
-        return None
-
-# --- MODELOS DE ARTISTAS (CRUD) ---
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    
+    # --- CAMBIO IMPORTANTE ---
+    # Habilita la coerción de llaves foráneas (desactivado por defecto en SQLite)
+    conn.execute("PRAGMA foreign_keys = ON;")
+    # -----------------------
+    
+    return conn
+# --- MODELOS DE ARTISTAS (CRUD - CORREGIDOS) ---
 
 def get_all_artistas_from_db(page: int, limit: int) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
     """
     Obtiene una lista paginada de artistas desde la base de datos,
     ordenados por popularidad.
-    Devuelve los artistas y un diccionario con metadatos de paginación.
+    Los errores de BD (ej. sqlite3.Error) se propagan a FastAPI.
     """
     if page < 1: page = 1
     if limit < 1 or limit > 100: limit = 10
@@ -39,8 +39,6 @@ def get_all_artistas_from_db(page: int, limit: int) -> Tuple[List[Dict[str, Any]
     conn = None
     try:
         conn = get_db_connection()
-        if conn is None: raise sqlite3.DatabaseError("No se pudo conectar a la base de datos")
-            
         cursor = conn.cursor()
         
         cursor.execute("SELECT COUNT(*) FROM artistas")
@@ -62,23 +60,22 @@ def get_all_artistas_from_db(page: int, limit: int) -> Tuple[List[Dict[str, Any]
         }
         return artistas, pagination_data
 
-    except Exception as e:
-        print(f"Error en get_all_artistas_from_db: {e}")
-        return [], {"page": page, "limit": limit, "total_records": 0, "total_pages": 0}
+    # Se elimina el bloque 'except Exception as e' que silenciaba los errores.
+    # Los errores de BD se propagarán a FastAPI, que devolverá un 500.
+    
     finally:
+        # El 'finally' asegura que la conexión se cierre sin importar qué pase.
         if conn: conn.close()
 
 def get_artista_by_id_from_db(artista_id: int) -> Optional[Dict[str, Any]]:
     """
     Obtiene un artista específico por su ID.
-    Además, cuenta el total de conciertos asociados a ese artista.
     Devuelve un diccionario con los datos del artista o None si no se encuentra.
+    Los errores de BD se propagan a FastAPI.
     """
     conn = None
     try:
         conn = get_db_connection()
-        if conn is None: raise sqlite3.DatabaseError("No se pudo conectar a la base de datos")
-            
         cursor = conn.cursor()
         
         query_artista = """
@@ -89,7 +86,10 @@ def get_artista_by_id_from_db(artista_id: int) -> Optional[Dict[str, Any]]:
         cursor.execute(query_artista, (artista_id,))
         artista_row = cursor.fetchone()
         
-        if artista_row is None: return None
+        # Esta lógica es correcta. Si no se encuentra, devuelve None
+        # y el router (routes_artistas.py) lo convertirá en un 404.
+        if artista_row is None: 
+            return None
         
         query_conciertos = "SELECT COUNT(*) FROM conciertos WHERE artista_id = ?"
         cursor.execute(query_conciertos, (artista_id,))
@@ -100,23 +100,22 @@ def get_artista_by_id_from_db(artista_id: int) -> Optional[Dict[str, Any]]:
         
         return artista_data
 
-    except Exception as e:
-        print(f"Error en get_artista_by_id_from_db: {e}")
-        return None
+    # Se elimina el bloque 'except Exception as e' que silenciaba los errores.
+    
     finally:
         if conn: conn.close()
 
-def create_artista_in_db(artista_data: Dict[str, Any]) -> Optional[int]:
+def create_artista_in_db(artista_data: Dict[str, Any]) -> int:
     """
     Inserta un nuevo artista en la base de datos.
-    Devuelve el ID del artista recién creado o None si falla.
+    Devuelve el ID del artista recién creado.
+    Los errores de BD (ej. sqlite3.IntegrityError) se propagan a FastAPI.
     """
     conn = None
     try:
         conn = get_db_connection()
-        if conn is None: raise sqlite3.DatabaseError("No se pudo conectar a la base de datos")
-        
         cursor = conn.cursor()
+        
         query = """
             INSERT INTO artistas (nombre, genero, pais, popularidad, imagen_url, biografia)
             VALUES (?, ?, ?, ?, ?, ?)
@@ -131,28 +130,26 @@ def create_artista_in_db(artista_data: Dict[str, Any]) -> Optional[int]:
         ))
         
         conn.commit()
-        return cursor.lastrowid # Devuelve el ID del nuevo artista
+        # Si la inserción es exitosa, se devuelve el ID.
+        # Si falla (ej. campo NOT NULL falta), se lanzará un error de BD.
+        return cursor.lastrowid 
 
-    except Exception as e:
-        print(f"Error en create_artista_in_db: {e}")
-        return None
+    # Se elimina el bloque 'except Exception as e' que silenciaba los errores.
+    
     finally:
         if conn: conn.close()
 
 def update_artista_in_db(artista_id: int, artista_data: Dict[str, Any]) -> bool:
     """
     Actualiza un artista existente en la base de datos.
-    Solo actualiza los campos proporcionados en artista_data.
-    Devuelve True si fue exitoso, False si no.
+    Devuelve True si fue exitoso (al menos 1 fila actualizada), False si no.
+    Los errores de BD se propagan a FastAPI.
     """
     conn = None
     try:
         conn = get_db_connection()
-        if conn is None: raise sqlite3.DatabaseError("No se pudo conectar a la base de datos")
-        
         cursor = conn.cursor()
 
-        # Construcción de query dinámico (inspirado en Claude)
         updates = []
         values = []
         
@@ -163,7 +160,7 @@ def update_artista_in_db(artista_id: int, artista_data: Dict[str, Any]) -> bool:
         
         if not updates:
             print("No hay campos para actualizar")
-            return False # No hay nada que actualizar
+            return False # Esto es lógica de negocio, no un error 500.
         
         values.append(artista_id)
         query = f"UPDATE artistas SET {', '.join(updates)} WHERE id = ?"
@@ -171,20 +168,20 @@ def update_artista_in_db(artista_id: int, artista_data: Dict[str, Any]) -> bool:
         cursor.execute(query, values)
         conn.commit()
         
-        return cursor.rowcount > 0 # Devuelve True si se actualizó 1 (o más) filas
+        # Devuelve True si se actualizó 1 (o más) filas
+        return cursor.rowcount > 0 
 
-    except Exception as e:
-        print(f"Error en update_artista_in_db: {e}")
-        return False
+    # Se elimina el bloque 'except Exception as e' que silenciaba los errores.
+    
     finally:
         if conn: conn.close()
 
-# --- MODELOS DE CONCIERTOS (CRUD) ---
+# --- MODELOS DE CONCIERTOS (CRUD - CORREGIDOS) ---
 
 def get_all_conciertos_from_db(page: int, limit: int, artista_id: Optional[int] = None) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
     """
     Obtiene una lista paginada de conciertos, con un filtro opcional por artista_id.
-    Realiza un JOIN con la tabla de artistas para incluir el nombre del artista.
+    Los errores de BD se propagan a FastAPI.
     """
     if page < 1: page = 1
     if limit < 1 or limit > 100: limit = 10
@@ -193,36 +190,25 @@ def get_all_conciertos_from_db(page: int, limit: int, artista_id: Optional[int] 
     conn = None
     try:
         conn = get_db_connection()
-        if conn is None: raise sqlite3.DatabaseError("No se pudo conectar a la base de datos")
-            
         cursor = conn.cursor()
         
-        # --- Construcción de Query Dinámico ---
-        base_query = """
-            FROM conciertos c
-            JOIN artistas a ON c.artista_id = a.id
-        """
+        base_query = "FROM conciertos c JOIN artistas a ON c.artista_id = a.id"
         where_clause = ""
-        params_count = []
-        params_data = []
+        params = []
 
         if artista_id:
             where_clause = " WHERE c.artista_id = ?"
-            params_count = [artista_id]
-            params_data = [artista_id]
-        # --- Fin de Query Dinámico ---
+            params = [artista_id]
         
-        cursor.execute(f"SELECT COUNT(c.id) {base_query} {where_clause}", params_count)
+        cursor.execute(f"SELECT COUNT(c.id) {base_query} {where_clause}", params)
         total_records = cursor.fetchone()[0]
         total_pages = math.ceil(total_records / limit)
         
-        select_clause = """
-            SELECT c.*, a.nombre as artista_nombre
-        """
+        select_clause = "SELECT c.*, a.nombre as artista_nombre"
         query = f"{select_clause} {base_query} {where_clause} ORDER BY c.fecha DESC LIMIT ? OFFSET ?"
         
-        params_data.extend([limit, offset])
-        cursor.execute(query, params_data)
+        params.extend([limit, offset])
+        cursor.execute(query, params)
         
         conciertos = [dict(row) for row in cursor.fetchall()]
         
@@ -232,22 +218,20 @@ def get_all_conciertos_from_db(page: int, limit: int, artista_id: Optional[int] 
         }
         return conciertos, pagination_data
 
-    except Exception as e:
-        print(f"Error en get_all_conciertos_from_db: {e}")
-        return [], {"page": page, "limit": limit, "total_records": 0, "total_pages": 0}
+    # Se elimina el bloque 'except Exception as e' que silenciaba los errores.
+    
     finally:
         if conn: conn.close()
 
 def get_concierto_by_id_from_db(concierto_id: int) -> Optional[Dict[str, Any]]:
     """
     Obtiene un concierto específico por su ID.
-    Realiza un JOIN con la tabla de artistas para incluir los detalles del artista.
+    Devuelve None si no se encuentra.
+    Los errores de BD se propagan a FastAPI.
     """
     conn = None
     try:
         conn = get_db_connection()
-        if conn is None: raise sqlite3.DatabaseError("No se pudo conectar a la base de datos")
-            
         cursor = conn.cursor()
         
         query = """
@@ -260,32 +244,29 @@ def get_concierto_by_id_from_db(concierto_id: int) -> Optional[Dict[str, Any]]:
         concierto_row = cursor.fetchone()
         
         if concierto_row is None:
-            return None
+            return None # Lógica de 404 (No Encontrado)
         
         return dict(concierto_row)
 
-    except Exception as e:
-        print(f"Error en get_concierto_by_id_from_db: {e}")
-        return None
+    # Se elimina el bloque 'except Exception as e' que silenciaba los errores.
+    
     finally:
         if conn: conn.close()
 
-def create_concierto_in_db(concierto_data: Dict[str, Any]) -> Optional[int]:
+def create_concierto_in_db(concierto_data: Dict[str, Any]) -> int:
     """
     Inserta un nuevo concierto en la base de datos.
-    Devuelve el ID del concierto recién creado o None si falla.
+    Devuelve el ID del concierto recién creado.
+    Los errores de BD (ej. FOREIGN KEY constraint) se propagan a FastAPI.
     """
     conn = None
     try:
         conn = get_db_connection()
-        if conn is None: raise sqlite3.DatabaseError("No se pudo conectar a la base de datos")
-        
         cursor = conn.cursor()
         
-        # Verificar que el artista_id existe
-        cursor.execute("SELECT id FROM artistas WHERE id = ?", (concierto_data['artista_id'],))
-        if cursor.fetchone() is None:
-            raise Exception("El artista_id proporcionado no existe")
+        # Se elimina la verificación manual del artista_id.
+        # Si el artista_id no existe, la restricción FOREIGN KEY de la BD
+        # lanzará un 'sqlite3.IntegrityError' que FastAPI atrapará como 500.
         
         query = """
             INSERT INTO conciertos 
@@ -313,9 +294,8 @@ def create_concierto_in_db(concierto_data: Dict[str, Any]) -> Optional[int]:
         conn.commit()
         return cursor.lastrowid
 
-    except Exception as e:
-        print(f"Error en create_concierto_in_db: {e}")
-        return None
+    # Se elimina el bloque 'except Exception as e' que silenciaba los errores.
+    
     finally:
         if conn: conn.close()
 
@@ -323,18 +303,16 @@ def update_concierto_in_db(concierto_id: int, concierto_data: Dict[str, Any]) ->
     """
     Actualiza un concierto existente en la base de datos.
     Solo actualiza los campos proporcionados en concierto_data.
+    Los errores de BD se propagan a FastAPI.
     """
     conn = None
     try:
         conn = get_db_connection()
-        if conn is None: raise sqlite3.DatabaseError("No se pudo conectar a la base de datos")
-        
         cursor = conn.cursor()
 
         updates = []
         values = []
         
-        # Lista de todos los campos que el manager puede actualizar
         updatable_fields = [
             'artista_id', 'nombre_evento', 'venue', 'ciudad', 'pais', 'fecha', 'status', 
             'asistencia_proyectada', 'asistencia_real', 'costos_produccion', 'ingresos_taquilla', 
@@ -348,7 +326,7 @@ def update_concierto_in_db(concierto_id: int, concierto_data: Dict[str, Any]) ->
         
         if not updates:
             print("No hay campos para actualizar")
-            return False
+            return False # Lógica de negocio (400), no un error 500
         
         values.append(concierto_id)
         query = f"UPDATE conciertos SET {', '.join(updates)} WHERE id = ?"
@@ -358,31 +336,28 @@ def update_concierto_in_db(concierto_id: int, concierto_data: Dict[str, Any]) ->
         
         return cursor.rowcount > 0
 
-    except Exception as e:
-        print(f"Error en update_concierto_in_db: {e}")
-        return False
+    # Se elimina el bloque 'except Exception as e' que silenciaba los errores.
+    
     finally:
         if conn: conn.close()
 
-# --- MODELO DE ESTADÍSTICAS ---
+# --- MODELO DE ESTADÍSTICAS (CORREGIDO) ---
 
 def get_stats_from_db() -> Dict[str, Any]:
     """
     Obtiene un resumen de estadísticas clave para el dashboard del manager.
-    Calcula KPIs financieros y de asistencia.
+    Los errores de BD se propagan a FastAPI.
     """
     conn = None
     try:
         conn = get_db_connection()
-        if conn is None: raise sqlite3.DatabaseError("No se pudo conectar a la base de datos")
-        
         cursor = conn.cursor()
         
         # 1. Top 10 artistas por popularidad
         cursor.execute("SELECT nombre, popularidad FROM artistas ORDER BY popularidad DESC LIMIT 10")
         top_artistas = [dict(row) for row in cursor.fetchall()]
         
-        # 2. Total de Ganancia Neta (Ingresos - Costos) de conciertos confirmados
+        # 2. Total de Ganancia Neta
         cursor.execute("""
             SELECT SUM(ingresos_taquilla) as total_ingresos, SUM(costos_produccion) as total_costos
             FROM conciertos
@@ -393,7 +368,7 @@ def get_stats_from_db() -> Dict[str, Any]:
         total_costos = financiero_row['total_costos'] or 0
         ganancia_neta = total_ingresos - total_costos
         
-        # 3. Comparación Asistencia Proyectada vs. Real
+        # 3. Comparación Asistencia
         cursor.execute("""
             SELECT SUM(asistencia_proyectada) as total_proyectado, SUM(asistencia_real) as total_real
             FROM conciertos
@@ -403,7 +378,7 @@ def get_stats_from_db() -> Dict[str, Any]:
         total_proyectado = asistencia_row['total_proyectado'] or 0
         total_real = asistencia_row['total_real'] or 0
         
-        # 4. Rentabilidad por Ciudad (Top 5)
+        # 4. Rentabilidad por Ciudad
         cursor.execute("""
             SELECT 
                 ciudad, 
@@ -431,8 +406,6 @@ def get_stats_from_db() -> Dict[str, Any]:
             "grafica_rentabilidad_ciudad": rentabilidad_ciudad
         }
 
-    except Exception as e:
-        print(f"Error en get_stats_from_db: {e}")
-        return {} # Devuelve un diccionario vacío en caso de error
+    
     finally:
         if conn: conn.close()

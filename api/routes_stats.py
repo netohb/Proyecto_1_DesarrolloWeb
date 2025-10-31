@@ -62,12 +62,12 @@ def get_estadisticas():
     múltiples consultas de agregación a la base de datos.
     """
     # Llama a la función en 'models.py' para obtener todas las estadísticas.
+    # Si 'models.py' (corregido) lanza un error de BD, 
+    # FastAPI lo atrapará y devolverá un 500 automáticamente.
     estadisticas_data = models.get_stats_from_db()
 
-    if not estadisticas_data:
-        # Si 'models.py' devuelve un diccionario vacío (indicando un error), lanza un error 500.
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail="Error interno del servidor al calcular las estadísticas")
+    # Se elimina el bloque 'if not estadisticas_data: raise HTTPException(500)'
+    # para seguir la recomendación del profesor de no lanzar errores 500 manualmente.
 
     # Devuelve los datos formateados según 'EstadisticasResponse'.
     return {"data": estadisticas_data}

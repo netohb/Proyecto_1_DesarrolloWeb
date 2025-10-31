@@ -137,15 +137,14 @@ def create_artista(artista: ArtistaBase = Body(..., description="Datos del nuevo
     artista_data = artista.model_dump()
     
     # Llama a la función en 'models.py' para insertar el nuevo artista en la base de datos.
+    # Si 'models.py' (corregido) lanza un error de BD, FastAPI lo atrapará 
+    # y devolverá una respuesta 500 automáticamente.
     nuevo_id = models.create_artista_in_db(artista_data)
     
-    if nuevo_id is None:
-        # Si la inserción falla (la función de 'models' devuelve None), se lanza un error HTTP 500.
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail="Error interno del servidor al intentar crear el artista")
+    # Se elimina el bloque 'if nuevo_id is None: raise HTTPException(500)'
+    # para seguir la recomendación del profesor de no lanzar errores 500 manualmente.
                             
     # Si la creación es exitosa, se devuelve la respuesta definida en 'ArtistaCreateResponse'.
-    # El código de estado HTTP 201 Created se define en el decorador.
     return {"data": {"id": nuevo_id}}
 
 @router.put("/{artista_id}", 
@@ -174,13 +173,12 @@ def update_artista(artista_id: int, artista: ArtistaBase = Body(..., description
          raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No se proporcionaron campos válidos para actualizar")
 
     # Paso 3: Llamar a la función en 'models.py' para ejecutar la actualización en la BD.
-    success = models.update_artista_in_db(artista_id, artista_data)
+    # Si 'models.py' (corregido) lanza un error de BD, 
+    # FastAPI lo atrapará y devolverá un 500 automáticamente.
+    models.update_artista_in_db(artista_id, artista_data)
     
-    if not success:
-        # Si la actualización falla por alguna razón (la función de 'models' devuelve False), se lanza un error 500.
-         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
-                            detail="Error interno del servidor al intentar actualizar el artista")
+    # Se elimina el bloque 'if not success: raise HTTPException(500)'
+    # para seguir la recomendación del profesor de no lanzar errores 500 manualmente.
                             
     # Si la actualización es exitosa, se devuelve la respuesta definida en 'ArtistaUpdateResponse'.
-    # FastAPI devuelve un código de estado HTTP 200 OK por defecto para PUT exitoso.
     return {"message": "Artista actualizado exitosamente"}
