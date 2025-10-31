@@ -91,6 +91,24 @@ Desarrollada con **HTML, CSS, JavaScript y Bootstrap 5.3**, conecta con el backe
 - 🌐 **API REST (FastAPI)** – Fuente de datos para artistas y estadísticas.
 
 ---
+## 🚀 Cómo levantar el Frontend
+
+1. Abre el proyecto en **Visual Studio Code** y asegúrate de tener instalada la extensión **Live Server**.
+
+2. Inicia el backend (API) con FastAPI en: http://127.0.0.1:8000/
+
+3. Dentro de la carpeta `frontend/`, abre el archivo `index.html`.
+
+4. Haz clic derecho sobre el archivo y selecciona: Open with Live Server
+   
+5. El frontend se abrirá automáticamente en tu navegador, normalmente en: http://127.0.0.1:5500/frontend/index.html
+
+6. Verifica que los datos se cargan correctamente desde la API (artistas, estadísticas y conciertos).  
+Si no ves información, asegúrate de que el backend esté en ejecución y que las URLs dentro de los archivos `.js` (por ejemplo `api.js` o `conciertos.js`) apunten al puerto correcto de la API.
+
+
+---
+
 ## 🎶 Frontend · Página Principal e Interfaz de Artistas
 
 ### 🏠 **index.html**
